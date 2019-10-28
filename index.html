@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>臭猫图灵</title>
+    <style>
+        * {
+            transition: all 2s;
+        }
+      body {
+        display:flex;
+        margin:0;
+        padding:0;
+        flex-direction: row;
+        justify-content:center;
+        align-items:center;
+        overflow-y:auto;
+        overflow-x:hidden;
+      }
+      .main-img {
+        flex:1;
+        height:100vh;
+        object-fit: cover;
+      }
+      .content-container{
+          flex:2;
+          display: flex;
+          justify-content: center;
+          align-items:center;
+          flex-direction:column;
+          min-height: 500px;
+        }
+      @media screen and (max-width: 900px) {
+        body {
+          flex-direction: column;
+        }
+        .main-img {
+            flex:1;
+            width:100vw;
+            object-fit: cover;
+        }
+      }
+    </style>
+    <script>
+        let left = [],right =[],current = document.html;
+        function goBack(str){
+            const current = left.pop();
+            right.push(current);
+            setPage(current)
+        }
+        function goForward(str) {
+            const current = right.pop();
+            left.push(current);
+            setPage(current)
+        }
+        function seve(str) {
+            fetch('/api/save', {
+                method: 'post',
+                body: JSON.stringify({content: str}),
+                headers: {
+		            "Content-type": "application/json; charset=UTF-8"
+	            }
+            }).then(res => {
+                console.log(res.json())
+            });
+            left.push(str);
+            setPage(str)
+        }
+        function getPage(){
+            return document.querySelector('html').outerHTML;
+        }
+        function setPage(str){
+            document.querySelector('html').innerHTML = str;
+        }
+    </script>
+    <script>
+        (function init() {
+            document.addEventListener("DOMContentLoaded", function(){
+                if(location.href.includes('type=edit')){
+                    document.querySelector('html').setAttribute('contenteditable', true)
+                }
+            });
+            
+        })()
+        function keyDown(e){
+    	    
+    	    var currKey=0, e=e||event||window.event;
+    	    currKey = e.keyCode||e.which||e.charCode;
+            	if(currKey == 83 && (e.ctrlKey||e.metaKey)){
+            	    e.preventDefault();
+            	    seve(getPage())
+            	}
+        }
+        document.onkeydown = keyDown;
+  </script>
+  </head>
+  <body>
+    <div class="content-container">
+      <h1>图灵</h1>
+      <span style="color: #999999">一只智障，并且又丑又臭的猫</span>
+    </div>
+    <img 
+        class="main-img"
+        src="http://q037lgp9a.bkt.clouddn.com/sleep.jpeg" />
+  </body>
+</html>
